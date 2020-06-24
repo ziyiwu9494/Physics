@@ -58,6 +58,28 @@ class Particle(Point):
         e_vector = COULOMB * self.charge * r / (np.linalg.norm(r)) ** 3
         return e_vector
 
+class Rod:
+    """
+    Rod with length and charge density. Coords is list of [bottom left corner, top right corner]
+    """
+
+    def __init__(self, coords: List[List[float]], length: float, charge_density: float):
+        self.coords = coords
+        self.length = length
+        self.charge_density = charge_density
+
+
+class Disk:
+    """
+    Disk with charge density. Coords is the center of the disk
+    note: 2D-only
+    """
+
+    def __init__(self, coords: List[float], length: float, charge_density: float):
+        self.coords = coords
+        self.length = length
+        self.charge_density = charge_density
+
 
 class UEField:
     """
@@ -85,6 +107,25 @@ class UEField:
         return self.magnitude * p.charge * self.vector / np.linalg.norm(self.vector)
 
 
+class UGField:
+    """
+    uniform gravitational field field
+    """
+
+    def __init__(self, vector: np.ndarray, magnitude=0):
+        self.vector = vector
+        self.magnitude = magnitude if magnitude != 0 else np.linalg.norm(vector)
+
+    def force(self, p: Particle):
+        """
+        force exerted by the electric field on particle p
+        :param p: massive particle p
+        :return: force exerted on p
+        TODO: make this work with direction vector
+        """
+        return self.magnitude * p.mass * self.vector / np.linalg.norm(self.vector)
+
+
 class Dipole:
     """
     electric dipole with dipole moment in C*M
@@ -110,8 +151,17 @@ class Dipole:
         return self.p * field.magnitude * (math.cos(theta_i) - math.cos(theta_i + theta))
 
 
-
-
-
-
-
+def find_electric_field(x, y, universe: list) -> np.ndarray:
+    """
+    find the electric field at the current point
+    :param universe: all charged particles to be considered
+    note:must have same number of dimensions as p
+    :return: electric field vector at point p in N/C
+    note: for testing visualization
+    """
+    e_vectors = np.empty(shape=(len(universe), 2))
+    i = 0
+    for particle in universe:
+        e_vectors[i] = particle.find_electric_field(Point([x, y]))
+        i += 1
+    return np.sum(e_vectors, axis=0)
