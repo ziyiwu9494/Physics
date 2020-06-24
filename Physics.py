@@ -58,6 +58,7 @@ class Particle(Point):
         e_vector = COULOMB * self.charge * r / (np.linalg.norm(r)) ** 3
         return e_vector
 
+
 class Rod:
     """
     Rod with length and charge density. Coords is list of [bottom left corner, top right corner]
@@ -165,3 +166,4 @@ def find_electric_field(x, y, universe: list) -> np.ndarray:
         e_vectors[i] = particle.find_electric_field(Point([x, y]))
         i += 1
     return np.sum(e_vectors, axis=0)
+
