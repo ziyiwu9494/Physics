@@ -35,6 +35,18 @@ def electric_field_test_4():
     assert str(Physics.Point([0.109, 0]).find_electric_field(env)) == "[-552983.7555761299, 0.0]"
 
 
+def electric_field_test_dipole():
+    """
+    maybe make actual dipoles behave like this?
+    :return:
+    """
+    env = [
+        Physics.Particle([0, float("1.61E-6")], float("6.68E-6"), 0),
+        Physics.Particle([0, float("-1.61E-6")], float("-6.68E-6"), 0)
+    ]
+    assert np.linalg.norm(Physics.Point([0.0893, 0]).find_electric_field(env).vector) == 271.8444474330574
+
+
 def dipole_test_1():
     field = Physics.UEField([], 34.9)
     dipole = Physics.Dipole(float("1.97E-25"), 72.6)
@@ -45,4 +57,5 @@ electric_field_test_1()
 electric_field_test_2()
 electric_field_test_3()
 electric_field_test_4()
+electric_field_test_dipole()
 dipole_test_1()
